@@ -42,7 +42,6 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required',
         ]);
-        $request->request->add(['brand_id' => 1]);
         Service::create($request->all());
         return redirect()->back()->with('success', 'Service created Successfully.');
     }
@@ -83,7 +82,6 @@ class ServiceController extends Controller
         $request->validate([
             'name' => 'required',
         ]);
-        $request->request->add(['brand_id' => 1]);
         $service->update($request->all());
         return redirect()->back()->with('success', 'Service Updated Successfully.');
     }

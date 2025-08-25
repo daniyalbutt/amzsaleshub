@@ -10,10 +10,6 @@ class Service extends Model
     use HasFactory;
 
     protected $table = 'services';
-    protected $fillable = ['name', 'brand_id', 'form'];
-    
-    public function brand(){
-        return $this->belongsTo(Brand::class);
-    }
+    protected $fillable = ['name', 'form'];
 
 }

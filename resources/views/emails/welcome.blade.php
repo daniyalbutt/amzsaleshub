@@ -1,4 +1,16 @@
 <html>
+    <head>
+        <!-- Add Google Fonts link -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                font-family: 'Open Sans', Arial, sans-serif !important;
+            }
+            h2 {
+                font-family: 'Open Sans', Arial, sans-serif !important;
+            }
+        </style>
+  </head>
     <body style="background-color:#e2e1e0;font-family: Open Sans, sans-serif;font-size:100%;font-weight:400;line-height:1.4;color:#000;">
         <table width="670" style="max-width:670px;margin:50px auto 10px;background-color:#fff;padding:50px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);-moz-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24); border-top: solid 10px #df3c3f;">
             <thead>
