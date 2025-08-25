@@ -641,8 +641,6 @@ class InvoiceController extends Controller
 
             try{
 
-                dd($request>input());
-
                 $get_client = DB::table('clients')->where('id', $invoiceData->client->id)->first();
                 
                 $get_client_merchants = DB::table('client_merchants')->where('merchant_key', 'stripe')->where('merchant_id', $invoiceData->merchant_id)->where('client_id', $invoiceData->client->id)->first();
@@ -696,23 +694,30 @@ class InvoiceController extends Controller
 
                 /* Creating Customer In Stripe */
                 if($invoiceData->payment_type == 0 ){
-                    $mainAmount =  $ServiceAmount * 100 ;
-
-                    $payment_intent_id = $stripe->paymentIntents->create([
-                        'amount' => $mainAmount, 
-                        'currency' => $invoiceData->currency_show->short_name, 
+                   
+                    $mainAmount = $ServiceAmount * 100;
+                    $paymentIntent = $stripe->paymentIntents->create([
+                        'amount' => $mainAmount,
+                        'currency' => $invoiceData->currency_show->short_name,
                         'description' => 'Payment for Invoice - ' . $invoiceData->invoice_number,
                         'customer' => $customer,
-                        'payment_method_types' => [ 
-                            'card' 
-                        ] 
+                        'payment_method_types' => ['card'],
+                        'capture_method' => 'manual',
                     ]);
+                    $paymentIntent = $stripe->paymentIntents->confirm(
+                        $paymentIntent->id,
+                        [
+                            'payment_method' => $request->paymentMethods,
+                        ]
+                    );
+                    
+                    if ($paymentIntent->status === 'requires_capture') {
+                        $paymentIntent = $stripe->paymentIntents->capture($paymentIntent->id);
+                        $transaction_id = $paymentIntent->id;
+                    } else {
+                        throw new \Exception("PaymentIntent not ready for capture. Status: " . $paymentIntent->status);
+                    }
 
-                    $paymentIntent = \Stripe\PaymentIntent::capture($payment_intent_id->id, [ 
-                        'customer' => $customer 
-                    ]); 
-
-                    $transaction_id = $paymentIntent->id;
                 }else{
                     $mainAmount =  $ServiceAmount - 5 ;
                     $paymnetOne = $mainAmount * 100;
@@ -846,7 +851,6 @@ class InvoiceController extends Controller
             }
 
             if($paymentIntent->status == "succeeded"){
-                dd($paymentIntent);
                 $invoice = array();
                 $invoice['request'] = $request;
                 $get_invoice = Invoice::findOrFail($request->invoice_id);
@@ -856,7 +860,7 @@ class InvoiceController extends Controller
                     $get_invoice->invoice_date = Carbon::today()->toDateTimeString();
                     $get_invoice->save();
                 }
-                $this->afterPaymentCheckForms($get_invoice);
+                $this->afterPaymentCheckForms($get_invoice->id);
                 // $user = Client::where('email', $get_invoice->client->email)->first();
                 // $user_client = User::where('email', $get_invoice->client->email)->first();
                 // if($user_client != null){

@@ -572,14 +572,29 @@ class SupportController extends Controller
                 $client_file->save();
             }
         }
+        
+        $client = User::find($request->client_id);
+        
         $details = [
             'title' => Auth()->user()->name . ' ' . Auth()->user()->last_name . ' has message on your task.',
-            'body' => 'Please Login into your Dashboard to view it..'
+            'body' => 'Please Login into your Dashboard to view it..',
+            'sender_name' => Auth::user()->name . ' ' . Auth::user()->last_name,
+            'sender_email' => Auth::user()->email,
+            'brand_name' => $client->client->brand->name,
+            'brand_logo' => $client->client->brand->logo,
+            'brand_phone' => $client->client->brand->phone,
+            'brand_email' => $client->client->brand->email,
+            'brand_address' => $client->client->brand->address,
+            'name' => $client->name,
+            'email' => $client->email,
+            'contact' => $client->contact,
+            'date' => $carbon,
+            'discription' => $request->message
         ];
+        
         if ($task != null) {
             \Mail::to($task->projects->client->email)->send(new \App\Mail\ClientNotifyMail($details));
         } else {
-            $client = User::find($request->client_id);
             \Mail::to($client->email)->send(new \App\Mail\ClientNotifyMail($details));
         }
         $task_id = 0;
