@@ -50,6 +50,10 @@
                                 </div>
                                 <div class="col-md-6 text-sm-right">
                                     <p class="mb-1">
+                                        <strong>Sales Type: </strong>
+                                        <span>{{ $_getInvoiceData->sale_type() }}</span>
+                                    </p>
+                                    <p class="mb-1">
                                         <strong>Invoice status: </strong>
                                         <span>{{  App\Models\Invoice::PAYMENT_STATUS[$_getInvoiceData->payment_status] }}</span>
                                     </p>

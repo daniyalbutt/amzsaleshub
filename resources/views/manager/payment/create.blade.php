@@ -19,17 +19,26 @@
                     <input type="hidden" name="client_id" value="{{$user->id}}">
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-3 form-group mb-3">
                                 <label for="name">First Name <span>*</span></label>
                                 <input type="text" id="name" class="form-control" value="{{ $user->name }} {{ $user->last_name }}" placeholder="Name" name="name" required="required">
                             </div>
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-3 form-group mb-3">
                                 <label for="email">Email <span>*</span></label>
                                 <input type="email" id="email" class="form-control" value="{{ $user->email }}" placeholder="Email" name="email" required="required">
                             </div>
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-3 form-group mb-3">
                                 <label for="contact">Contact</label>
                                 <input type="text" id="contact" class="form-control" value="{{ $user->contact }}" placeholder="Contact" name="contact">
+                            </div>
+                            <div class="col-md-3 form-group mb-3">
+                                <label for="sale_type">Sale Type <strong>*</strong></label>
+                                <select class="form-control" name="sale_type" id="sale_type" required>
+                                    <option value="">Select Sale Type</option>
+                                    <option value="1">Front</option>
+                                    <option value="2">Upsell</option>
+                                    <option value="3">Remaining</option>
+                                </select>
                             </div>
                             <div class="col-md-3 form-group mb-3">
                                 <label for="brand">Brand Name <span>*</span></label>
@@ -39,7 +48,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-6 form-group mb-3">
                                 <label for="service">Service <span>*</span></label>
                                 <select name="service[]" id="service" class="form-control select2" required multiple>
                                     @foreach($services as $service)
@@ -52,14 +61,6 @@
                                 <select name="package" id="package" class="form-control" required>
                                     <option value="">Select Package</option>
                                     <option value="0" selected>Custom Package</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 form-group mb-3">
-                                <label for="createform">Create form of Service <span>*</span></label>
-                                <select name="createform" id="createform" class="form-control" required>
-                                    <option value="">Select Option</option>
-                                    <option value="1">YES</option>
-                                    <option value="0">NO</option>
                                 </select>
                             </div>
                             <div class="col-md-3 form-group mb-3">

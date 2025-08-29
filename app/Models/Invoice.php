@@ -69,4 +69,16 @@ class Invoice extends Model
     public function invoice_logs(){
         return $this->hasOne(InvoiceLogs::class, 'invoice_id', 'id');
     }
+
+    public function sale_type(){
+        if($this->sale_type == 1){
+            return 'Front';
+        }
+        if($this->sale_type == 2){
+            return 'Upsell';
+        }
+        if($this->sale_type == 3){
+            return 'Remaining';
+        }
+    }
 }

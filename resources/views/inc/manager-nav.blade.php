@@ -109,25 +109,10 @@
                 </a>
                 <div class="triangle"></div>
             </li>
-            <li class="nav-item {{ request()->routeIs('manager.message') || request()->routeIs('manager.message.show') ? 'active' : '' }}">
-                <a class="nav-item-hold" href="{{ route('manager.message') }}">
-                    <i class="nav-icon i-Speach-Bubble-3"></i>
-                    <span class="nav-text">Messages</span>
-                </a>
-                <div class="triangle"></div>
-            </li>
             <li class="nav-item {{ request()->routeIs('manager.notification') || request()->routeIs('manager.notification') ? 'active' : '' }}">
                 <a class="nav-item-hold" href="{{ route('manager.notification') }}">
                     <i class="nav-icon i-Bell"></i>
                     <span class="nav-text">Notificaiton</span>
-                </a>
-                <div class="triangle"></div>
-            </li>
-            <li class="nav-item {{ request()->routeIs('manager.tickets') || request()->routeIs('manager.issue.show') ? 'active' : '' }}">
-                <a class="nav-item-hold" href="{{ route('manager.tickets') }}">
-                    <i class="nav-icon i-Thread"></i>
-                    <span class="nav-text">QA Reports</span>
-                    <span class="counter">{{ Auth()->user()->issueCounts() }}</span>
                 </a>
                 <div class="triangle"></div>
             </li>
@@ -142,13 +127,6 @@
                 <a class="nav-item-hold" href="{{ route('manager.invoice') }}">
                     <i class="nav-icon i-Credit-Card"></i>
                     <span class="nav-text">Invoices</span>
-                </a>
-                <div class="triangle"></div>
-            </li>
-            <li class="nav-item {{ (request()->routeIs('manager.brief.pending')) ? 'active' : '' }}">
-                <a class="nav-item-hold" href="{{ route('manager.brief.pending') }}">
-                    <i class="nav-icon i-Folder-Close"></i>
-                    <span class="nav-text">Brief Pending</span>
                 </a>
                 <div class="triangle"></div>
             </li>

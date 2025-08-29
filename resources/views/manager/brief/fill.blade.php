@@ -19,21 +19,21 @@
         <div class="card-body">
             <h4 class="card-title mb-3">Pending Projects Info</h4>
             <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item"><a class="nav-link active" id="logo-brief-tab" data-toggle="tab" href="#logo-brief" role="tab" aria-controls="logo-brief" aria-selected="true">Logo Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="website-brief-tab" data-toggle="tab" href="#website-brief" role="tab" aria-controls="website-brief" aria-selected="false">Website Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="smm-brief-tab" data-toggle="tab" href="#smm-brief" role="tab" aria-controls="smm-brief" aria-selected="false">SMM Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="content-brief-tab" data-toggle="tab" href="#content-brief" role="tab" aria-controls="content-brief" aria-selected="false">Content Writing Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="seo-brief-tab" data-toggle="tab" href="#seo-brief" role="tab" aria-controls="seo-brief" aria-selected="false">SEO Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="book-formatting-brief-tab" data-toggle="tab" href="#book-formatting-brief" role="tab" aria-controls="book-formatting-brief" aria-selected="false">Book Formatting & Publishing Brief</a></li>
-                <li class="nav-item"><a class="nav-link" id="book-writing-brief-tab" data-toggle="tab" href="#book-writing-brief" role="tab" aria-controls="book-writing-brief" aria-selected="false">Book Writing</a></li>
-                <li class="nav-item"><a class="nav-link" id="author_website-brief-tab" data-toggle="tab" href="#author_website-brief" role="tab" aria-controls="author_website-brief" aria-selected="false">Author Website</a></li>
-                <li class="nav-item"><a class="nav-link" id="editing-proofreading-brief-tab" data-toggle="tab" href="#editing-proofreading-brief" role="tab" aria-controls="editing-proofreading-brief" aria-selected="false">Editing & Proofreading</a></li>
-                <li class="nav-item"><a class="nav-link" id="cover-design-brief-tab" data-toggle="tab" href="#cover-design-brief" role="tab" aria-controls="cover-design-brief" aria-selected="false">Cover Design</a></li>
-                <li class="nav-item"><a class="nav-link" id="book-marketing-brief-tab" data-toggle="tab" href="#book-marketing-brief" role="tab" aria-controls="book-marketing-brief" aria-selected="false">Book Marketing</a></li>
-                <li class="nav-item"><a class="nav-link" id="no-brief-tab" data-toggle="tab" href="#no-brief" role="tab" aria-controls="no-brief" aria-selected="false">No Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link active" id="logo-brief-tab" data-toggle="tab" href="#logo-brief" role="tab" aria-controls="logo-brief" aria-selected="true">Logo Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="website-brief-tab" data-toggle="tab" href="#website-brief" role="tab" aria-controls="website-brief" aria-selected="false">Website Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="smm-brief-tab" data-toggle="tab" href="#smm-brief" role="tab" aria-controls="smm-brief" aria-selected="false">SMM Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="content-brief-tab" data-toggle="tab" href="#content-brief" role="tab" aria-controls="content-brief" aria-selected="false">Content Writing Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="seo-brief-tab" data-toggle="tab" href="#seo-brief" role="tab" aria-controls="seo-brief" aria-selected="false">SEO Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="book-formatting-brief-tab" data-toggle="tab" href="#book-formatting-brief" role="tab" aria-controls="book-formatting-brief" aria-selected="false">Book Formatting & Publishing Brief</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="book-writing-brief-tab" data-toggle="tab" href="#book-writing-brief" role="tab" aria-controls="book-writing-brief" aria-selected="false">Book Writing</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="author_website-brief-tab" data-toggle="tab" href="#author_website-brief" role="tab" aria-controls="author_website-brief" aria-selected="false">Author Website</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="editing-proofreading-brief-tab" data-toggle="tab" href="#editing-proofreading-brief" role="tab" aria-controls="editing-proofreading-brief" aria-selected="false">Editing & Proofreading</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="cover-design-brief-tab" data-toggle="tab" href="#cover-design-brief" role="tab" aria-controls="cover-design-brief" aria-selected="false">Cover Design</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="book-marketing-brief-tab" data-toggle="tab" href="#book-marketing-brief" role="tab" aria-controls="book-marketing-brief" aria-selected="false">Book Marketing</a></li>
+                <li class="nav-item d-none"><a class="nav-link" id="no-brief-tab" data-toggle="tab" href="#no-brief" role="tab" aria-controls="no-brief" aria-selected="false">No Brief</a></li>
             </ul>
             <div class="tab-content pr-0 pl-0" id="myTabContent">
-                <div class="tab-pane fade show active" id="logo-brief" role="tabpanel" aria-labelledby="logo-brief-tab">
+                <div class="tab-pane fade" id="logo-brief" role="tabpanel" aria-labelledby="logo-brief-tab">
                     <div class="table-responsive">
                         <table class="display table table-striped table-bordered datatable-init" style="width:100%">
                             <thead>
@@ -639,8 +639,7 @@
                             </tfoot>
                         </table>
                     </div>
-                </div>
-                
+                </div>        
 
                 <div class="tab-pane fade" id="cover-design-brief" role="tabpanel" aria-labelledby="cover-design-brief-tab">
                     <div class="table-responsive">
@@ -703,8 +702,7 @@
                     </div>
                 </div>
 
-
-                <div class="tab-pane fade" id="no-brief" role="tabpanel" aria-labelledby="no-brief-tab">
+                <div class="tab-pane fade show active" id="no-brief" role="tabpanel" aria-labelledby="no-brief-tab">
                     <div class="table-responsive">
                         <table class="display table table-striped table-bordered datatable-init" style="width:100%">
                             <thead>
