@@ -18,8 +18,11 @@ use App\Models\WebForm;
 use App\Models\SmmForm;
 use App\Models\ContentWritingForm;
 use App\Models\SeoForm;
+use App\Models\Spending;
 use App\Models\SubTask;
+use App\Models\Invoice;
 use DB;
+use Illuminate\Support\Carbon;
 
 class HomeController extends Controller
 {
@@ -40,15 +43,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $clients_count = DB::table('clients')->where('user_id', Auth::user()->id)->count();
-        $paid_invoice = DB::table('invoices')->where('payment_status', 2)->where('sales_agent_id', Auth::user()->id)->count();
-        $un_paid_invoice = DB::table('invoices')->where('payment_status', 1)->where('sales_agent_id', Auth::user()->id)->count();
-        $logo_form = LogoForm::where('logo_name', '')->where('agent_id', Auth()->user()->id)->count();
-        $web_form = WebForm::where('business_name', null)->where('agent_id', Auth()->user()->id)->count();
-        $smm_form = SmmForm::where('business_name', null)->where('agent_id', Auth()->user()->id)->count();
-        $content_writing_form = ContentWritingForm::where('company_name', null)->where('agent_id', Auth()->user()->id)->count();
-        $seo_form = SeoForm::where('company_name', null)->where('agent_id', Auth()->user()->id)->count();
-        return view('marketing.home', compact('clients_count', 'paid_invoice', 'un_paid_invoice'));
+        $today = Carbon::today();
+        $monthStart = Carbon::now()->startOfMonth();
+        $month_name = $monthStart->format('F');
+        $year = $monthStart->format('Y');
+        $today_spending = Spending::select('type', DB::raw('SUM(amount) as total'))->whereDate('date', $today)->groupBy('type')->get();
+        $month_spending = Spending::whereBetween('date', [$monthStart, Carbon::now()])->sum('amount');
+        $sales_by_type = Invoice::select('sale_type', DB::raw('SUM(amount) as total'))->where('payment_status', 2)->whereBetween('updated_at', [$monthStart, Carbon::now()])->whereIn('brand', Auth::user()->brand_list())->groupBy('sale_type')->get();
+        $month_sales = Invoice::where('payment_status', 2)->whereBetween('updated_at', [$monthStart, Carbon::now()])->whereIn('brand', Auth::user()->brand_list())->sum('amount');
+        return view('marketing.home', compact('today_spending', 'month_spending', 'month_name', 'year', 'sales_by_type', 'month_sales'));
     }
 
     /**
