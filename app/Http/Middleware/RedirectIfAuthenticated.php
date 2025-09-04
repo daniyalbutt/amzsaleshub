@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
             return redirect()->route('production.home');
         }
         if(Auth::guard($guard)->check() && auth()->user()->is_employee == 0){
-            return redirect()->route('sale.home');
+            return redirect()->route('marketing.home');
         }
         if(Auth::guard($guard)->check() && auth()->user()->is_employee == 2){
             return redirect()->route('admin.home');

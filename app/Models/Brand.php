@@ -25,4 +25,13 @@ class Brand extends Model
         return $this->belongsToMany(Merchant::class);
     }
 
+    public function getShortNameAttribute(): string{
+        return strtoupper(
+            implode('', array_map(
+                fn($v) => mb_substr($v, 0, 1),
+                preg_split('/\s+/', trim($this->name))
+            ))
+        );
+    }
+
 }

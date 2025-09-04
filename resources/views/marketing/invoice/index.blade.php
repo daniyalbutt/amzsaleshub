@@ -1,4 +1,4 @@
-@extends('layouts.app-manager')
+@extends('layouts.app-marketing')
 @section('title', 'Invoices')
 @section('content')
 <div class="breadcrumb">
@@ -10,7 +10,7 @@
     <div class="col-md-12">
         <div class="card text-left">
             <div class="card-body">
-                <form action="{{ route('manager.invoice') }}" method="GET">
+                <form action="{{ route('sale.invoice') }}" method="GET">
                     <div class="row">
                         <div class="col-md-3 form-group mb-3">
                             <label for="package">Search Package</label>
@@ -21,8 +21,13 @@
                             <input type="text" class="form-control" id="invoice" name="invoice" value="{{ Request::get('invoice') }}">
                         </div>
                         <div class="col-md-3 form-group mb-3">
-                            <label for="user">Search Name or Email</label>
-                            <input type="text" class="form-control" id="user" name="user" value="{{ Request::get('user') }}">
+                            <label for="user">Select User</label>
+                            <select class="form-control select2" name="user" id="user">
+                                <option value="0">Any</option>
+                                @foreach(Auth()->user()->getClient as $getClient)
+                                <option value="{{ $getClient->id }}" {{ Request::get('user') == $getClient->id ? 'selected' : '' }}>{{ $getClient->name }} {{ $getClient->last_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-3 form-group mb-3">
                             <label for="status">Select Status</label>
@@ -32,17 +37,8 @@
                                 <option value="1" {{ Request::get('status') == 1 ? 'selected' : '' }}>Unpaid</option>
                             </select>
                         </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label for="brand">Select Brand</label>
-                            <select class="form-control select2" name="brand" id="brand">
-                                <option value="">All Brands</option>
-                                @foreach(Auth::user()->brands as $brands)
-                                <option value="{{ $brands->id }}" {{ Request::get('brand') == $brands->id ? 'selected' : ''}}>{{ $brands->name }}</option>
-                                @endforeach 
-                            </select>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="text-right mt-4">
+                        <div class="col-md-12">
+                            <div class="text-right">
                                 <button class="btn btn-primary">Search Result</button>
                             </div>
                         </div>
@@ -76,9 +72,9 @@
                         </thead>
                         <tbody>
                             @foreach($data as $datas)
-                            <tr id="invoice-{{ $datas->id }}">
+                            <tr>
                                 <td>
-                                    <span class="btn btn-sm btn-dark">{{ $datas->invoice_number }}</span>
+                                    <span class="btn btn-sm btn-dark">#{{ $datas->invoice_number }}</span>
                                 </td>
                                 <td>
                                     @if($datas->package == 0)
@@ -88,7 +84,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $datas->name }}<br>{{ $datas->email }}</td>
-                                <td>{{ $datas->sale->name }} {{ $datas->sale->last_name }} <br> {{ $datas->sale->email }} </td>
+                                <td>{{ $datas->sale->name }} {{ $datas->sale->last_name }}<br>{{ $datas->sale->email }}</td>
                                 <td>
                                     <span class="btn btn-primary btn-sm" title="{{ $datas->brands->name }}">
                                         {{ $datas->brands->short_name }}
@@ -104,16 +100,10 @@
                                 <td>
                                     <span class="btn btn-{{ App\Models\Invoice::STATUS_COLOR[$datas->payment_status] }} btn-sm">
                                         {{ App\Models\Invoice::PAYMENT_STATUS[$datas->payment_status] }}
-                                        @if($datas->payment_status == 1)
-                                        <form method="post" action="{{ route('manager.invoice.paid', $datas->id) }}">
-                                            @csrf
-                                            <button type="submit" class="mark-paid btn btn-danger p-0">Click</button>
-                                        </form>
-                                        @endif
                                     </span>
                                 </td>
                                 <td>
-                                    {{ $datas->currency_show->sign }}{{ $datas->amount }}<br>
+                                    {{ $datas->currency_show->sign }}{{ $datas->amount }} <br>
                                     <span class="btn btn-dark btn-sm">{{ $datas->sale_type() }}</span>
                                 </td>
                                 <td>
@@ -123,26 +113,16 @@
                                 <td>
                                     {{ $datas->merchant->name }} <br><button class="btn btn-sm btn-secondary">{{ $datas->merchant->get_merchant_name() }}</button>
                                 </td>
-                                <td class="d-none">
-                                    @if($datas->payment_status == 2)
-                                    <a href="javascript:;" class="btn btn-{{ $datas->client->user == null ? 'primary' : 'success' }} btn-sm auth-create" data-id="{{ $datas->client->id }}" data-auth="{{ $datas->client->user == null ? 0 : 1 }}" data-password="{{ $datas->client->user == null ? '' : $datas->client->user->password }}">{{ $datas->client->user == null ? 'Click Here' : 'Reset Pass' }}</a>
-                                    @else
-                                    <span class="btn btn-info btn-sm">Payment Pending</span>
-                                    @endif
-
-                                </td>
                                 <td>
-                                    <div>
-                                        @if($datas->payment_status == 1)
-                                        <a href="{{ route('manager.invoice.edit', $datas->id) }}" class="btn btn-primary btn-icon btn-sm mb-1">
-                                            <span class="ul-btn__icon"><i class="i-Edit"></i></span>
-                                        </a>
-                                        <br>
-                                        @endif
-                                        <a href="{{ route('manager.link', $datas->id) }}" class="btn btn-info btn-icon btn-sm">
-                                            <span class="ul-btn__icon"><i class="i-Eye-Visible"></i></span>
-                                        </a>
-                                    </div>
+                                    @if($datas->payment_status == 1)
+                                    <a href="{{ route('sale.invoice.edit', $datas->id) }}" class="btn btn-primary btn-icon btn-sm mb-1">
+                                        <span class="ul-btn__icon"><i class="i-Edit"></i></span>
+                                    </a>
+                                    <br>
+                                    @endif
+                                    <a href="{{ route('marketing.link', $datas->id) }}" class="btn btn-info btn-icon btn-sm">
+                                        <span class="ul-btn__icon"><i class="i-Eye-Visible"></i></span>
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -152,7 +132,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Package Name</th>
-                                <th>User Name</th>
+                                <th>User</th>
                                 <th>Agent</th>
                                 <th>Brand</th>
                                 <th>Service</th>
@@ -189,7 +169,6 @@
         }
         return retVal;
     }
-
     $('.auth-create').on('click', function () {
         var auth = $(this).data('auth');
         var id = $(this).data('id');
@@ -219,15 +198,11 @@
                 }
                 $.ajax({
                     type:'POST',
-                    url: "{{ route('manager.client.createauth') }}",
+                    url: "{{ route('sale.client.createauth') }}",
                     data: {id: id, pass:inputValue},
                     success:function(data) {
                         if(data.success == true){
                             swal("Auth Created", "Password is : " + inputValue, "success");
-                            $('tr#invoice-'+id).find('.auth-create').addClass('btn-success');
-                            $('tr#invoice-'+id).find('.auth-create').text('Reset Pass');
-                            $('tr#invoice-'+id).find('.auth-create')[0].setAttribute("data-password", data.password);
-                            $('tr#invoice-'+id).find('.auth-create')[0].setAttribute("data-auth", 1);
                         }else{
                             return swal({
                                 title:"Error",
@@ -269,7 +244,7 @@
                 
                 $.ajax({
                     type:'POST',
-                    url: "{{ route('manager.client.updateauth') }}",
+                    url: "{{ route('sale.client.updateauth') }}",
                     data: {id: id, pass:inputValue},
                     success:function(data) {
                         if(data.success == true){

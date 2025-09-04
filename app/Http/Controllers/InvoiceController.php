@@ -173,7 +173,6 @@ class InvoiceController extends Controller
     {
         $get_brand = Brand::find($request->brand);
         $get_short_brand = implode('', array_map(function($v) { return $v[0]; }, explode(' ', $get_brand->name)));
-        $invoice_number = date('ymd').$get_short_brand.$request->amount;
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -186,13 +185,8 @@ class InvoiceController extends Controller
             'merchant' => 'required'
         ]);
         $latest = Invoice::latest()->first();
-        if (! $latest) {
-            $numPadded = sprintf("%04d", 1);
-            $nextInvoiceNumber = $invoice_number . $numPadded;
-        }else{
-            $numPadded = sprintf("%04d", $latest->id + 1);
-            $nextInvoiceNumber = $invoice_number . $numPadded;
-        }
+        $nextId = $latest ? $latest->id + 1 : 1;
+        $nextInvoiceNumber = 'INV-' . $get_short_brand . '-' . date('y') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
         $contact = $request->contact;
         if($contact == null){
             $contact = '#';
@@ -345,7 +339,7 @@ class InvoiceController extends Controller
 		$invoiceId = Crypt::decrypt($id);
 		$_getInvoiceData = Invoice::findOrFail($invoiceId);
 		$_getBrand = Brand::where('id',$_getInvoiceData->brand)->first();
-        return view('sale.invoice.link-page', compact('_getInvoiceData', 'id', '_getInvoiceData', '_getBrand'));
+        return view('marketing.invoice.link-page', compact('_getInvoiceData', 'id', '_getInvoiceData', '_getBrand'));
     }
 
     public function linkPageManager($id){
@@ -405,6 +399,9 @@ class InvoiceController extends Controller
 
     public function payNow($id){
 		$_getInvoiceData = Invoice::where('invoice_id', $id)->first();
+        if($_getInvoiceData == null){
+            abort(404);
+        }
         if($_getInvoiceData->merchant->hold_merchant == 1){
             abort(404);
         }
@@ -2003,6 +2000,8 @@ class InvoiceController extends Controller
 
     public function saleStore(Request $request)
     {
+        $get_brand = Brand::find($request->brand);
+        $get_short_brand = implode('', array_map(function($v) { return $v[0]; }, explode(' ', $get_brand->name)));
         $validated = $request->validate([
             'name' => 'required',
             'email' => 'required',
@@ -2012,21 +2011,17 @@ class InvoiceController extends Controller
             'currency' => 'required',
             'amount' => 'required',
             'payment_type' => 'required',
-            'merchant' => 'required'
+            'merchant' => 'required',
+            'sale_type' => 'required'
         ]);
         $latest = Invoice::latest()->first();
-        if (! $latest) {
-            $nextInvoiceNumber = date('Y').'-1';
-        }else{
-            $expNum = explode('-', $latest->invoice_number);
-            $expIncrement = (int)$expNum[1] + 1;
-            $nextInvoiceNumber = $expNum[0].'-'.$expIncrement;
-        }
+        $nextId = $latest ? $latest->id + 1 : 1;
+        $nextInvoiceNumber = 'INV-' . $get_short_brand . '-' . date('y') . '-' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
         $contact = $request->contact;
         if($contact == null){
             $contact = '#';
         }
-		$invoice = new Invoice;
+        $invoice = new Invoice;
         $invoice->createform = 1;
         $invoice->name = $request->name;
         $invoice->email = $request->email;
@@ -2042,17 +2037,18 @@ class InvoiceController extends Controller
         $invoice->payment_status = '1';
         $invoice->custom_package = $request->custom_package;
         $invoice->payment_type = $request->payment_type;
-		$service = implode(",",$request->service);
-		$invoice->service = $service;
-		$invoice->merchant_id = $request->merchant;
-
+        $service = implode(",",$request->service);
+        $invoice->service = $service;
+        $invoice->merchant_id = $request->merchant;
+        $invoice->invoice_id = bin2hex(random_bytes(24));
+        $invoice->sale_type = $request->sale_type;
         $invoice->save();
-		$id = $invoice->id;
+        $id = $invoice->id;
 
         $id = Crypt::encrypt($id);
-		$invoiceId = Crypt::decrypt($id);
-		$_getInvoiceData = Invoice::findOrFail($invoiceId);
-		$_getBrand = Brand::where('id',$_getInvoiceData->brand)->first();
+        $invoiceId = Crypt::decrypt($id);
+        $_getInvoiceData = Invoice::findOrFail($invoiceId);
+        $_getBrand = Brand::where('id',$_getInvoiceData->brand)->first();
         $package_name = '';
         if($_getInvoiceData->package == 0){
             $package_name = strip_tags($_getInvoiceData->custom_package);
@@ -2079,7 +2075,7 @@ class InvoiceController extends Controller
             ];
             // \Mail::to($_getInvoiceData->email)->send(new \App\Mail\InoviceMail($details));
         }
-		return redirect()->route('sale.link',($invoice->id));
+		return redirect()->route('marketing.link',($invoice->id));
     }
 
     public function getInvoiceBySaleManager(Request $request){
@@ -2125,7 +2121,7 @@ class InvoiceController extends Controller
             $data = $data->where('payment_status', $request->status);
         }
         $data = $data->paginate(10);
-        return view('sale.invoice.index', compact('data'));
+        return view('marketing.invoice.index', compact('data'));
     }
 
     public function getSingleInvoice($id){
@@ -2168,7 +2164,7 @@ class InvoiceController extends Controller
         $services = Service::all();
         $currencies =  Currency::all();
         $merchant =  Merchant::all();
-        return view('sale.invoice.edit', compact('invoice', 'brand', 'services', 'currencies', 'merchant'));
+        return view('marketing.invoice.edit', compact('invoice', 'brand', 'services', 'currencies', 'merchant'));
     }
 
     public function editInvoiceManager($id){
@@ -2227,6 +2223,7 @@ class InvoiceController extends Controller
             'amount' => 'required',
             'payment_type' => 'required',
             'merchant' => 'required',
+            'sale_type' => 'required'
         ]);
         $contact = $request->contact;
         if($contact == null){
@@ -2248,8 +2245,9 @@ class InvoiceController extends Controller
 		$service = implode(",",$request->service);
 		$invoice->service = $service;
 		$invoice->merchant_id = $request->merchant;
+        $invoice->sale_type = $request->sale_type;
         $invoice->save();
-        return redirect()->route('sale.link',($invoice->id));
+        return redirect()->route('marketing.link',($invoice->id));
     }
     
 }

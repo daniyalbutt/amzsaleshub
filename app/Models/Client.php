@@ -9,7 +9,7 @@ class Client extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'last_name', 'email', 'contact', 'user_id', 'status', 'brand_id', 'assign_id'];
+    protected $fillable = ['name', 'last_name', 'email', 'contact', 'user_id', 'status', 'brand_id', 'assign_id', 'client_source', 'added_by'];
 
     public function brand(){
         return $this->hasOne(Brand::class, 'id', 'brand_id');
@@ -22,7 +22,6 @@ class Client extends Model
     public function added_by(){
         return $this->hasOne(User::class, 'id', 'assign_id');
     }
-
 
     public function agent(){
         return $this->hasOne(User::class, 'id', 'assign_id');
@@ -42,6 +41,18 @@ class Client extends Model
 
     public function last_invoice_paid(){
         return $this->hasOne(Invoice::class)->where('payment_status', 2)->orderBy('id', 'desc');
+    }
+
+    public function getSource(){
+        if($this->client_source == 0){
+            return 'PPC';
+        }
+        if($this->client_source == 1){
+            return 'TT';
+        }
+        if($this->client_source == 2){
+            return 'SMM';
+        }
     }
     
 }

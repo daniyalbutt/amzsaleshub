@@ -163,6 +163,6 @@ class AdminProjectController extends Controller
     public function paymentLink($id){
         $user = Project::find($id);
         $brand = Brand::whereIn('id', Auth()->user()->brand_list())->get();;
-        return view('sale.payment.create', compact('user', 'brand'));
+        return view('marketing.payment.create', compact('user', 'brand'));
     }
 }

@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-marketing')
 
 @section('content')
 <div class="content-header row">
@@ -49,7 +49,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="client">Select Client <span>*</span></label>
-                                                <select name="client" id="client" class="form-control" >
+                                                <select name="client" id="client" class="form-control select2">
                                                     <option value="">Select Client</option>
                                                     @foreach($clients as $client)
                                                     <option value="{{$client->id}}">{{$client->name}}</option>

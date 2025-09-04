@@ -1,4 +1,4 @@
-@extends('layouts.app-manager')
+@extends('layouts.app-marketing')
    
 @section('content')
 <div class="content-header row">

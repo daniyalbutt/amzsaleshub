@@ -48,8 +48,7 @@ class HomeController extends Controller
         $smm_form = SmmForm::where('business_name', null)->where('agent_id', Auth()->user()->id)->count();
         $content_writing_form = ContentWritingForm::where('company_name', null)->where('agent_id', Auth()->user()->id)->count();
         $seo_form = SeoForm::where('company_name', null)->where('agent_id', Auth()->user()->id)->count();
-        $brief_count = $logo_form + $web_form + $smm_form + $content_writing_form + $seo_form;
-        return view('sale.home', compact('clients_count', 'paid_invoice', 'un_paid_invoice', 'brief_count'));
+        return view('marketing.home', compact('clients_count', 'paid_invoice', 'un_paid_invoice'));
     }
 
     /**

@@ -81,4 +81,26 @@ class Invoice extends Model
             return 'Remaining';
         }
     }
+
+    public function getServiceBadgesAttribute(): array
+    {
+        $badges = [];
+        $ids = array_filter(explode(',', $this->service));
+
+        foreach ($ids as $id) {
+            if ($service = Service::find($id)) {
+                $words   = preg_split('/\s+/', trim($service->name));
+                $letters = array_map(fn($word) => mb_substr($word, 0, 1), $words);
+                $initials = implode('', $letters);
+
+                $badges[] = [
+                    'initials' => $initials,
+                    'full'     => $service->name,
+                ];
+            }
+        }
+
+        return $badges;
+    }
+    
 }

@@ -61,7 +61,7 @@
                             <label for="role">Role <span>*</span></label>
                             <select name="is_employee" id="role" class="form-control">
                                 <option value="4">Customer Support</option>
-                                <option value="0">Sale Agent</option>
+                                <option value="0">Marketing</option>
                                 <option value="6">Sales Manager</option>
                             </select>
                         </div>

@@ -40,6 +40,7 @@ use App\Http\Controllers\BookCoverController;
 use App\Http\Controllers\BookMarketingController;
 use App\Http\Controllers\InvoiceAPIController;
 use App\Http\Controllers\IssueController;
+use App\Http\Controllers\SpendingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -274,14 +275,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'is_sale'], function(){
+        Route::resource('/spending', SpendingController::class);
         // TICKET ROUTES
         Route::get('/tickets', [IssueController::class, 'getTicketsSale'])->name('sale.tickets');
         Route::get('/issue/{id}', [IssueController::class, 'showTicketSale'])->name('sale.issue.show');
         // TICKET ROUTES
-
-        Route::get('/projects', [HomeController::class, 'getProjectBySale'])->name('sale.project');
         Route::get('task/show/{id}', [TaskController::class, 'saleTaskShow'])->name('sale.task.show');
-        Route::get('/home', [HomeController::class, 'index'])->name('sale.home');
+        Route::get('/home', [HomeController::class, 'index'])->name('marketing.home');
         Route::get('sale/edit-profile', [HomeController::class, 'editProfile'])->name('sale.edit.profile');
         Route::patch('/update-profile/{id}', [HomeController::class, 'updateProfile'])->name('sale.update.profile');
         Route::get('/change-password', [HomeController::class, 'changePassword'])->name('sale.change.password');
@@ -298,15 +298,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/client-chat/{id}', [HomeController::class, 'saleChat'])->name('sale.chat');
         Route::get('sale/messages/{id}', [HomeController::class, 'fetchMessages'])->name('sale.fetch.messages');
         Route::post('sale/messages/{id}', [HomeController::class, 'sendMessage'])->name('sale.send.messages');
-        Route::post('invoice', [InvoiceController::class, 'saleStore'])->name('sale.invoice.create');
-        Route::post('invoice/update', [InvoiceController::class, 'saleUpdate'])->name('sale.invoice.update');
-        Route::any('invoice/generated/{id}', [InvoiceController::class, 'linkPageSale'])->name('sale.link');
+        Route::post('invoice', [InvoiceController::class, 'saleStore'])->name('marketing.invoice.create');
+        Route::post('invoice/update', [InvoiceController::class, 'saleUpdate'])->name('marketing.invoice.update');
+        Route::any('invoice/generated/{id}', [InvoiceController::class, 'linkPageSale'])->name('marketing.link');
         Route::get('invoice', [InvoiceController::class, 'getInvoiceByUserId'])->name('sale.invoice');
         Route::get('invoice/{id}', [InvoiceController::class, 'getSingleInvoice'])->name('sale.single.invoice');
         Route::get('invoice/edit/{id}', [InvoiceController::class, 'editInvoice'])->name('sale.invoice.edit');
         Route::post('client/create_auth/', [AdminClientController::class, 'createAuth'])->name('sale.client.createauth');
         Route::post('client/update_auth/', [AdminClientController::class, 'updateAuth'])->name('sale.client.updateauth');
-        Route::get('brief/pending', [LogoFormController::class, 'getBriefPendingById'])->name('sale.brief.pending');
         Route::get('sale/{form_id}/projects/{check}/form/{id}', [SupportController::class, 'getFormSale'])->name('sale.form');
     });
 });

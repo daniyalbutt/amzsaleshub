@@ -37,7 +37,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $data = new Client;
-        $data = $data->where('user_id', Auth()->user()->id);
+        $data = $data->whereIn('brand_id', Auth()->user()->brand_list());
         $data = $data->orderBy('id', 'desc');
         if ($request->name != '') {
             $data = $data->whereRaw(
@@ -53,8 +53,11 @@ class ClientController extends Controller
         if ($request->status != '') {
             $data = $data->where('status', $request->status);
         }
-        $data = $data->paginate(10);
-        return view('sale.client.index', compact('data'));
+        if ($request->brand != '') {
+            $data = $data->where('brand_id', $request->brand);
+        }
+        $data = $data->paginate(20);
+        return view('marketing.client.index', compact('data'));
     }
 
     public function managerClient(Request $request)
@@ -98,7 +101,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('sale.client.create');
+        return view('marketing.client.create');
     }
 
     public function managerClientCreate()
@@ -120,8 +123,9 @@ class ClientController extends Controller
             'email' => 'required|unique:clients,email',
             'status' => 'required',
             'brand_id' => 'required',
+            'client_source' => 'required'
         ]);
-        $request->request->add(['assign_id' => auth()->user()->id]);
+        $request->request->add(['assign_id' => auth()->user()->id, 'added_by' => auth()->user()->id]);
         $client = Client::create($request->all());
         return redirect()->route('client.generate.payment', $client->id);
     }
@@ -158,11 +162,11 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        $data = Client::where('id', $id)->where('user_id', Auth::user()->id)->first();
+        $data = Client::where('id', $id)->whereIn('brand_id', Auth()->user()->brand_list())->first();
         if ($data == null) {
             return redirect()->back();
         } else {
-            return view('sale.client.edit', compact('data'));
+            return view('marketing.client.edit', compact('data'));
         }
     }
 
@@ -215,6 +219,8 @@ class ClientController extends Controller
             'name' => 'required',
             'last_name' => 'required',
             'status' => 'required',
+            'brand_id' => 'required',
+            'client_source' => 'required'
         ]);
         $client->update($request->all());
         return redirect()->back()->with('success', 'Client Updated Successfully.');
@@ -238,7 +244,7 @@ class ClientController extends Controller
         $services = Service::all();
         $currencies =  Currency::all();
         $merchant = Merchant::orderBy('id', 'desc')->get();
-        return view('sale.payment.create', compact('user', 'brand', 'currencies', 'services', 'merchant'));
+        return view('marketing.payment.create', compact('user', 'brand', 'currencies', 'services', 'merchant'));
     }
 
     public function managerPaymentLink($id)

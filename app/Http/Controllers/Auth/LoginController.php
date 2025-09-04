@@ -58,7 +58,7 @@ class LoginController extends Controller
                 Auth::logout();
                 return redirect()->back()->with('error', 'Email-Address And Password Are Wrong.');
             }else if(auth()->user()->is_employee == 0){
-                return redirect()->route('sale.home');
+                return redirect()->route('marketing.home');
             }else if (auth()->user()->is_employee == 1) {
                 $data = $this->checkUserValid($request);
                 return redirect()->to($data);
