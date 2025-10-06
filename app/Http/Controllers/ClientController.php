@@ -125,8 +125,9 @@ class ClientController extends Controller
             'brand_id' => 'required',
             'client_source' => 'required'
         ]);
-        $request->request->add(['assign_id' => auth()->user()->id, 'added_by' => auth()->user()->id]);
+        $request->request->add(['assign_id' => auth()->user()->id]);
         $client = Client::create($request->all());
+        return redirect()->back()->with('success', 'Client Updated Successfully.');
         return redirect()->route('client.generate.payment', $client->id);
     }
 
