@@ -2034,6 +2034,7 @@ class InvoiceController extends Controller
         $invoice->sales_agent_id = Auth()->user()->id;
         $invoice->discription = $request->discription;
         $invoice->amount = $request->amount;
+        $invoice->total_amount = $request->total_amount;
         $invoice->payment_status = '1';
         $invoice->custom_package = $request->custom_package;
         $invoice->payment_type = $request->payment_type;
@@ -2077,6 +2078,59 @@ class InvoiceController extends Controller
         }
 		return redirect()->route('marketing.link',($invoice->id));
     }
+
+    public function getPreviousInvoices(Request $request)
+    {
+        $clientId = $request->client_id;
+
+        // Get FIRST front invoice (defines total contract value)
+        $frontFirst = Invoice::with(['merchant'])
+            ->where('client_id', $clientId)
+            ->where('sale_type', 1)
+            ->oldest() // First invoice = contract total
+            ->first();
+
+        // Get total payments made for Front
+        $frontPaid = Invoice::where('client_id', $clientId)
+            ->where('sale_type', 1)
+            ->sum('amount');
+
+        // Same logic for Upsell
+        $upsellFirst = Invoice::with(['merchant'])
+            ->where('client_id', $clientId)
+            ->where('sale_type', 2)
+            ->oldest()
+            ->first();
+
+        $upsellPaid = Invoice::where('client_id', $clientId)
+            ->where('sale_type', 2)
+            ->sum('amount');
+
+        return response()->json([
+            'front' => $frontFirst ? [
+                'amount'       => (float) $frontPaid, // all payments so far
+                'total'        => (float) $frontFirst->total_amount, // first invoice total
+                'remaining'    => max(0, $frontFirst->total_amount - $frontPaid), // calculated
+                'merchant_id'  => $frontFirst->merchant_id,
+                'currency_id'  => $frontFirst->currency,
+                'brand'        => $frontFirst->brand
+            ] : null,
+
+            'upsell' => $upsellFirst ? [
+                'amount'       => (float) $upsellPaid,
+                'total'        => (float) $upsellFirst->total_amount,
+                'remaining'    => max(0, $upsellFirst->total_amount - $upsellPaid),
+                'merchant_id'  => $upsellFirst->merchant_id,
+                'currency_id'  => $upsellFirst->currency_id,
+                'brand'        => $upsellFirst->brand
+            ] : null,
+        ]);
+    }
+
+
+
+
+
 
     public function getInvoiceBySaleManager(Request $request){
         $data = new Invoice;

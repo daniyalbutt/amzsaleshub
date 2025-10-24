@@ -53,13 +53,6 @@
             font-weight: bold;
             color: #0076c2;
         }
-
-        a.brands-list span {
-            border-right: 2px solid rgba(102, 51, 153, 0.1);
-            padding-right: 10px;
-            margin-right: 9px;
-        }
-        a.brands-list span:last-child {border: 0;}
     </style>
 </head>
 <body class="text-left">

@@ -18,21 +18,33 @@
                     @csrf   
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-3 form-group mb-3">
                                 <label for="amount">Amount ($) <span>*</span></label>
                                 <input type="number" step="0.01" name="amount" id="amount" class="form-control" value="{{ old('amount') }}" required>
                                 @error('amount')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-4 form-group mb-3">                                
+                            <div class="col-md-3 form-group mb-3">
+                                <label for="brand_id">Select Brand <span>*</span></label>
+                                <select name="brand_id" id="brand_id" class="form-control select2" required>
+                                    <option value="">-- Select Brand --</option>
+                                    @foreach($brand as $key => $value)
+                                    <option value="{{ $value->id }}" {{ old('brand_id') === $value->id ? 'selected' : '' }}>{{ $value->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('type')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-3 form-group mb-3">                                
                                 <label for="date">Date <span>*</span></label>
                                 <input type="date" name="date" id="date" class="form-control" value="{{ old('date', date('Y-m-d')) }}" required>
                                 @error('date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="col-md-4 form-group mb-3">
+                            <div class="col-md-3 form-group mb-3">
                                 <label for="type">Type <span>*</span></label>
                                 <select name="type" id="type" class="form-control" required>
                                     <option value="">-- Select Type --</option>

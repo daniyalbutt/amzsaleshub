@@ -299,6 +299,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('sale/messages/{id}', [HomeController::class, 'fetchMessages'])->name('sale.fetch.messages');
         Route::post('sale/messages/{id}', [HomeController::class, 'sendMessage'])->name('sale.send.messages');
         Route::post('invoice', [InvoiceController::class, 'saleStore'])->name('marketing.invoice.create');
+        Route::get('invoice/previous', [InvoiceController::class, 'getPreviousInvoices'])->name('marketing.invoice.previous');
         Route::post('invoice/update', [InvoiceController::class, 'saleUpdate'])->name('marketing.invoice.update');
         Route::any('invoice/generated/{id}', [InvoiceController::class, 'linkPageSale'])->name('marketing.link');
         Route::get('invoice', [InvoiceController::class, 'getInvoiceByUserId'])->name('sale.invoice');
@@ -307,6 +308,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('client/create_auth/', [AdminClientController::class, 'createAuth'])->name('sale.client.createauth');
         Route::post('client/update_auth/', [AdminClientController::class, 'updateAuth'])->name('sale.client.updateauth');
         Route::get('sale/{form_id}/projects/{check}/form/{id}', [SupportController::class, 'getFormSale'])->name('sale.form');
+        Route::get('/dashboard/spending-chart', [HomeController::class, 'spendingChart'])->name('dashboard.spendingChart');
+
     });
 });
 Route::group(['middleware' => 'auth'], function () {

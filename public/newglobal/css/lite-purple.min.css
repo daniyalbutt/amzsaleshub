@@ -27268,3 +27268,13 @@ p.message {
 p.message:focus-visible{
   outline: 0px;
 }  
+
+a.brands-list span {
+  border-right: 2px solid rgba(102, 51, 153, 0.1);
+  padding-right: 10px;
+  margin-right: 9px;
+}
+
+a.brands-list span:last-child {
+  border-right: 0;
+}

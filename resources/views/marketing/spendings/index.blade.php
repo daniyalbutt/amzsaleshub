@@ -4,7 +4,7 @@
 
 <div class="breadcrumb row">
     <div class="col-md-6">
-        <h1>Clients List</h1>
+        <h1>Spending List</h1>
         <ul>
             <li><a href="#">Spending</a></li>
             <li>Spending List</li>
@@ -23,24 +23,19 @@
                 <form action="{{ route('spending.index') }}" method="GET">
                     <div class="row">
                         <div class="col-md-3 form-group mb-3">
-                            <label for="name">Search Name</label>
-                            <input type="text" class="form-control" id="name" name="name" value="{{ Request::get('name') }}">
-                        </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label for="email">Search Email</label>
-                            <input type="text" class="form-control" id="email" name="email" value="{{ Request::get('email') }}">
-                        </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label for="contact">Search Contact</label>
-                            <input type="text" class="form-control" id="contact" name="contact" value="">
-                        </div>
-                        <div class="col-md-3 form-group mb-3">
-                            <label for="status">Select Status</label>
-                            <select class="form-control select2" name="status" id="status">
-                                <option value="">Any</option>
-                                <option value="1" {{ Request::get('status') == 1 ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ Request::get('status') == 0 ? 'selected' : '' }}>Deactive</option>
+                            <label for="name">Search Brand</label>
+                            <select name="brand" id="brand" class="form-control select2">
+                                <option value="">All Brand</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}" {{ Request::get('brand') == $brand->id ? 'selected' : '' }}>
+                                        {{ $brand->name }}
+                                    </option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="col-md-3 form-group mb-3">
+                            <label for="date">Search Date</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ Request::get('date') }}">
                         </div>
                         <div class="col-md-12">
                             <div class="text-right">
@@ -63,6 +58,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Brand</th>
                                 <th>Date</th>
                                 <th>Type</th>
                                 <th>Amount</th>
@@ -74,6 +70,7 @@
                             @foreach($data as $datas)
                             <tr>
                                 <td>{{ $datas->id }}</td>
+                                <td><span class="btn btn-primary btn-sm">{{ $datas->brand != null ? $datas->brand->name : '' }}</span></td>
                                 <td>{{ $datas->date->format('d M Y') }}</td>
                                 <td><span class="btn btn-dark btn-sm">{{ $datas->type_label }}</span></td>
                                 <td>${{ number_format($datas->amount, 2) }}</td>
@@ -91,6 +88,7 @@
                         <tfoot>
                             <tr>
                                 <th>ID</th>
+                                <th>Brand</th>
                                 <th>Date</th>
                                 <th>Type</th>
                                 <th>Amount</th>

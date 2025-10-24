@@ -56,12 +56,6 @@
             font-size: 18px;
             font-weight: bold;
         }
-
-        a.brands-list span {
-            border-right: 2px solid rgba(102, 51, 153, 0.1);
-            padding-right: 10px;
-            margin-right: 9px;
-        }
     </style>
 </head>
 

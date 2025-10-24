@@ -13,7 +13,8 @@ class Spending extends Model
         'amount',
         'date',
         'type',
-        'added_by'
+        'added_by',
+        'brand_id'
     ];
 
     protected $casts = [
@@ -33,5 +34,9 @@ class Spending extends Model
 
     public function added(){
         return $this->hasOne(User::class, 'id', 'added_by');
+    }
+
+    public function brand(){
+        return $this->belongsTo(Brand::class);
     }
 }

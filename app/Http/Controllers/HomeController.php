@@ -51,8 +51,56 @@ class HomeController extends Controller
         $month_spending = Spending::whereBetween('date', [$monthStart, Carbon::now()])->sum('amount');
         $sales_by_type = Invoice::select('sale_type', DB::raw('SUM(amount) as total'))->where('payment_status', 2)->whereBetween('updated_at', [$monthStart, Carbon::now()])->whereIn('brand', Auth::user()->brand_list())->groupBy('sale_type')->get();
         $month_sales = Invoice::where('payment_status', 2)->whereBetween('updated_at', [$monthStart, Carbon::now()])->whereIn('brand', Auth::user()->brand_list())->sum('amount');
-        return view('marketing.home', compact('today_spending', 'month_spending', 'month_name', 'year', 'sales_by_type', 'month_sales'));
+
+        $brands = auth()->user()->brands;
+
+        return view('marketing.home', compact('today_spending', 'month_spending', 'month_name', 'year', 'sales_by_type', 'month_sales', 'brands'));
     }
+
+    public function spendingChart(Request $request)
+    {
+        $query = Spending::query();
+
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
+        if ($request->filled('from_date') && $request->filled('to_date')) {
+            $query->whereBetween('date', [$request->from_date, $request->to_date]);
+        }
+
+        $spendings = $query->selectRaw('DATE(date) as date, type, SUM(amount) as total_amount')
+                        ->groupBy('date', 'type')
+                        ->orderBy('date', 'asc')
+                        ->get();
+
+        // Convert to readable structure for Chart.js
+        $types = Spending::TYPES;
+        $grouped = [];
+
+        foreach ($types as $typeId => $typeName) {
+            $grouped[$typeName] = [];
+        }
+
+        $dates = $spendings->pluck('date')->unique()->values();
+
+        foreach ($dates as $date) {
+            foreach ($types as $typeId => $typeName) {
+                $amount = $spendings
+                    ->where('date', $date)
+                    ->where('type', $typeId)
+                    ->sum('total_amount');
+
+                $grouped[$typeName][] = (float) $amount;
+            }
+        }
+
+        return response()->json([
+            'dates' => $dates->map(fn($d) => \Carbon\Carbon::parse($d)->format('Y-m-d')),
+            'datasets' => $grouped,
+        ]);
+    }
+
 
     /**
      * Show the application dashboard.

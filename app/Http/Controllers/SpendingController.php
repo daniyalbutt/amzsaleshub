@@ -14,9 +14,19 @@ class SpendingController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Spending::latest('date')->paginate(10);
-        return view('marketing.spendings.index', compact('data'));
+        $brands = auth()->user()->brands;
+        $query = Spending::with('brand')->latest('date');
+        if ($request->filled('brand')) {
+            $query->where('brand_id', $request->brand);
+        }
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
+        }
+        $data = $query->paginate(10);
+        $data->appends($request->all());
+        return view('marketing.spendings.index', compact('data', 'brands'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -25,7 +35,8 @@ class SpendingController extends Controller
      */
     public function create()
     {
-        return view('marketing.spendings.create');
+        $brand = Auth()->user()->brands;
+        return view('marketing.spendings.create', compact('brand'));
     }
 
     /**
@@ -40,6 +51,7 @@ class SpendingController extends Controller
             'amount' => 'required|numeric|min:0',
             'date'   => 'required|date',
             'type'   => 'required|in:0,1,2',
+            'brand_id' => 'required'
         ]);
         $request->request->add(['added_by' => auth()->user()->id]);
         Spending::create($request->all());
@@ -66,10 +78,11 @@ class SpendingController extends Controller
     public function edit($id)
     {
         $data = Spending::where('id', $id)->first();
+        $brands = Auth()->user()->brands;
         if ($data == null) {
             return redirect()->back();
         } else {
-            return view('marketing.spendings.edit', compact('data'));
+            return view('marketing.spendings.edit', compact('data', 'brands'));
         }
     }
 
@@ -88,6 +101,7 @@ class SpendingController extends Controller
             'amount' => 'required|numeric|min:0',
             'date'   => 'required|date',
             'type'   => 'required|in:0,1,2',
+            'brand_id' => 'required'
         ]);
         
         $spending->update($request->all());

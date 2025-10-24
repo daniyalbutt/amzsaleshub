@@ -93,6 +93,9 @@
                                     @endif
                                 </td>
                                 <td>
+                                    <a href="{{ route('client.show', $datas->id) }}" class="btn btn-info btn-icon btn-sm">
+                                        <span class="ul-btn__icon"><i class="i-Eye-Visible"></i></span>
+                                    </a>
                                     <a href="{{route('client.edit', $datas->id)}}" class="btn btn-primary btn-icon btn-sm">
                                         <span class="ul-btn__icon"><i class="i-Edit"></i></span>
                                     </a>
